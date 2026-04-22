@@ -1,24 +1,39 @@
-function applyTimeBonus(score, time) {
-    if (time < 30) return Math.min(score + 50, 1000);
-    return score;
+function applyTimeBonus(score, time = 9999) {
+    return time < 30 ? Math.min(score + 50, 1000) : score;
 }
 
-function determineStatus(score, isWebcamVerified) {
-    if (score < 200) return "Échec - Module A insuffisant";
-    if (score < 700) return "Échec - Score insuffisant";
-    if (!isWebcamVerified) return "Attente de validation";
-    return "Certifié";
+function validate(moduleA) {
+    if (moduleA == null) {
+        return { ok: false, status: "Erreur données" };
+    }
+
+    if (moduleA < 200) {
+        return { ok: false, status: "Échec - Module A insuffisant" };
+    }
+
+    return { ok: true };
+}
+
+function getStatus(score, webcam = false) {
+    if (webcam !== true) {
+        return "Attente de validation";
+    }
+
+    if (score >= 700) return "Certifié";
+
+    return "Échec - Score insuffisant";
 }
 
 function calculateCertScore(moduleA, time, webcam) {
-    if (moduleA === null || moduleA === undefined) {
-        return { finalScore: 0, status: "Erreur données" };
+    const check = validate(moduleA);
+    if (!check.ok) {
+        return { finalScore: 0, status: check.status };
     }
 
-    const scoreWithBonus = applyTimeBonus(moduleA, time);
-    const status = determineStatus(scoreWithBonus, webcam);
+    const score = applyTimeBonus(moduleA, time);
+    const status = getStatus(score, webcam === true);
 
-    return { finalScore: scoreWithBonus, status };
+    return { finalScore: score, status };
 }
 
 module.exports = { calculateCertScore };
