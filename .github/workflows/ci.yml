@@ -15,3 +15,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          - name: Install dependancies
+             run: npm ci
+          -name :run tests with coverage
+              run: npm test
