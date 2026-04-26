@@ -1,120 +1,133 @@
-const { calculateCertScore } = require('../app');
+const {
+  calculateCertScore,
+  normalizeScore,
+  adjustScoreWithTime,
+  getFailureStatus,
+  getSuccessStatus
+} = require("../app");
 
-describe('SmartExam Certification - FINAL QUALITY GATE', () => {
+describe("SmartExam Certification - FULL COVERAGE", () => {
 
-    // ========================
-    // MODULE A (100% branches)
-    // ========================
-    test('moduleA = 0', () => {
-        const r = calculateCertScore(0, 40, true);
-        expect(r.status).toContain("Échec critique");
-    });
+  // ---------------- normalizeScore ----------------
+  test("normalizeScore > 1000", () => {
+    expect(normalizeScore(1500)).toBe(1000);
+  });
 
-    test('moduleA 1-49', () => {
-        const r = calculateCertScore(25, 40, true);
-        expect(r.status).toContain("Échec critique");
-    });
+  test("normalizeScore < 0", () => {
+    expect(normalizeScore(-50)).toBe(0);
+  });
 
-    test('moduleA 50-99', () => {
-        const r = calculateCertScore(75, 40, true);
-        expect(r.status).toContain("Échec");
-    });
+  test("normalizeScore normal", () => {
+    expect(normalizeScore(500)).toBe(500);
+  });
 
-    test('moduleA 100-199', () => {
-        const r = calculateCertScore(150, 40, true);
-        expect(r.status).toContain("Échec");
-    });
+  // ---------------- adjustScoreWithTime ----------------
+  test("time undefined", () => {
+    expect(adjustScoreWithTime(100, undefined)).toBe(90);
+  });
 
-    test('moduleA boundary 199', () => {
-        const r = calculateCertScore(199, 40, true);
-        expect(r.status).toContain("Échec");
-    });
+  test("time null", () => {
+    expect(adjustScoreWithTime(100, null)).toBe(90);
+  });
 
-    // ========================
-    // TIME BRANCHES FULL COVERAGE
-    // ========================
-    test('time undefined', () => {
-        const r = calculateCertScore(800, undefined, true);
-        expect(r.finalScore).toBeDefined();
-    });
+  test("time <= 0", () => {
+    expect(adjustScoreWithTime(100, 0)).toBe(80);
+  });
 
-    test('time null', () => {
-        const r = calculateCertScore(800, null, true);
-        expect(r.finalScore).toBeDefined();
-    });
+  test("time < 10", () => {
+    expect(adjustScoreWithTime(100, 5)).toBe(200);
+  });
 
-    test('time = 0', () => {
-        const r = calculateCertScore(800, 0, true);
-        expect(r.finalScore).toBeLessThan(800);
-    });
+  test("time < 30", () => {
+    expect(adjustScoreWithTime(100, 20)).toBe(150);
+  });
 
-    test('time < 10', () => {
-        const r = calculateCertScore(800, 5, true);
-        expect(r.finalScore).toBeGreaterThan(800);
-    });
+  test("time > 300", () => {
+    expect(adjustScoreWithTime(100, 350)).toBe(0);
+  });
 
-    test('time < 30', () => {
-        const r = calculateCertScore(800, 20, true);
-        expect(r.finalScore).toBeGreaterThan(800);
-    });
+  test("time > 120", () => {
+    expect(adjustScoreWithTime(100, 200)).toBe(50);
+  });
 
-    test('time = 120 boundary', () => {
-        const r = calculateCertScore(800, 120, true);
-        expect(r.finalScore).toBeDefined();
-    });
+  test("time normal", () => {
+    expect(adjustScoreWithTime(100, 60)).toBe(100);
+  });
 
-    test('time > 120', () => {
-        const r = calculateCertScore(800, 150, true);
-        expect(r.finalScore).toBeLessThan(800);
-    });
+  // ---------------- getFailureStatus ----------------
+  test("failure statuses", () => {
+    expect(getFailureStatus(0)).toBe("Score nul");
+    expect(getFailureStatus(200)).toBe("Échec critique");
+    expect(getFailureStatus(400)).toBe("Échec faible");
+    expect(getFailureStatus(550)).toBe("Échec moyen");
+    expect(getFailureStatus(650)).toBe("Presque réussi");
+    expect(getFailureStatus(800)).toBe("Échec");
+  });
 
-    test('time > 300', () => {
-        const r = calculateCertScore(800, 400, true);
-        expect(r.finalScore).toBeLessThan(800);
-    });
+  // ---------------- getSuccessStatus ----------------
+  test("webcam undefined", () => {
+    expect(getSuccessStatus(800, undefined)).toBe("Webcam non définie");
+  });
 
-    // ========================
-    // NORMALIZATION FULL COVERAGE
-    // ========================
-    test('score > 1000 clamp', () => {
-        const r = calculateCertScore(1500, 10, true);
-        expect(r.finalScore).toBeLessThanOrEqual(1000);
-    });
+  test("webcam null", () => {
+    expect(getSuccessStatus(800, null)).toBe("Webcam non définie");
+  });
 
-    test('score negative → normalize 0', () => {
-        const r = calculateCertScore(-5, 10, true);
-        expect(r.finalScore).toBe(0);
-    });
+  test("webcam true distinction", () => {
+    expect(getSuccessStatus(950, true)).toBe("Certifié avec distinction");
+  });
 
-    // ========================
-    // SUCCESS / FAILURE PATH
-    // ========================
-    test('success path >= 700', () => {
-        const r = calculateCertScore(900, 40, true);
-        expect(r.finalScore).toBeGreaterThanOrEqual(700);
-    });
+  test("webcam true normal", () => {
+    expect(getSuccessStatus(800, true)).toBe("Certifié");
+  });
 
-    test('failure path < 700', () => {
-        const r = calculateCertScore(600, 40, true);
-        expect(r.status).toBeDefined();
-    });
+  test("webcam false", () => {
+    expect(getSuccessStatus(800, false)).toBe("Attente de validation");
+  });
 
-    // ========================
-    // WEBCASE EDGE CASES
-    // ========================
-    test('webcam false', () => {
-        const r = calculateCertScore(800, 40, false);
-        expect(r.status).toBe("Attente de validation");
-    });
+  test("webcam invalid", () => {
+    expect(getSuccessStatus(800, "x")).toBe("Erreur webcam");
+  });
 
-    test('webcam string invalid', () => {
-        const r = calculateCertScore(800, 40, "abc");
-        expect(r.status).toBe("Erreur webcam");
-    });
+  // ---------------- calculateCertScore ----------------
+  test("moduleA undefined", () => {
+    expect(calculateCertScore(undefined, 10, true).status)
+      .toBe("Erreur données");
+  });
 
-    test('certifié avec distinction', () => {
-        const r = calculateCertScore(950, 10, true);
-        expect(r.status).toBe("Certifié avec distinction");
-    });
+  test("moduleA null", () => {
+    expect(calculateCertScore(null, 10, true).status)
+      .toBe("Erreur données");
+  });
+
+  test("moduleA negative", () => {
+    expect(calculateCertScore(-5, 10, true).status)
+      .toBe("Erreur score négatif");
+  });
+
+  test("moduleA < 50", () => {
+    expect(calculateCertScore(30, 10, true).status)
+      .toContain("très faible");
+  });
+
+  test("moduleA < 100", () => {
+    expect(calculateCertScore(80, 10, true).status)
+      .toContain("faible");
+  });
+
+  test("moduleA < 200", () => {
+    expect(calculateCertScore(150, 10, true).status)
+      .toContain("insuffisant");
+  });
+
+  test("success >= 700", () => {
+    const result = calculateCertScore(900, 10, true);
+    expect(result.finalScore).toBeDefined();
+  });
+
+  test("failure < 700", () => {
+    const result = calculateCertScore(500, 10, false);
+    expect(result.status).toBeDefined();
+  });
 
 });

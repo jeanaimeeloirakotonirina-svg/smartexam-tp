@@ -81,4 +81,10 @@ function calculateCertScore(moduleAScore, totalTimeMinutes, isWebcamVerified) {
     };
 }
 
-module.exports = { calculateCertScore };
+module.exports = {
+    normalizeScore,
+    adjustScoreWithTime,
+    getFailureStatus,
+    getSuccessStatus,
+    calculateCertScore
+};
