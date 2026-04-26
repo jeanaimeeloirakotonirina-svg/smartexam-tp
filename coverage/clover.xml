@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1777212327774" clover="3.2.0">
-  <project timestamp="1777212327774" name="All files">
-    <metrics statements="39" coveredstatements="36" conditionals="52" coveredconditionals="43" methods="5" coveredmethods="5" elements="96" coveredelements="84" complexity="0" loc="39" ncloc="39" packages="1" files="1" classes="1"/>
+<coverage generated="1777212729897" clover="3.2.0">
+  <project timestamp="1777212729897" name="All files">
+    <metrics statements="39" coveredstatements="37" conditionals="52" coveredconditionals="44" methods="5" coveredmethods="5" elements="96" coveredelements="86" complexity="0" loc="39" ncloc="39" packages="1" files="1" classes="1"/>
     <file name="app.js" path="C:\smartexam-tp\app.js">
-      <metrics statements="39" coveredstatements="36" conditionals="52" coveredconditionals="43" methods="5" coveredmethods="5"/>
+      <metrics statements="39" coveredstatements="37" conditionals="52" coveredconditionals="44" methods="5" coveredmethods="5"/>
       <line num="2" count="14" type="cond" truecount="2" falsecount="0"/>
       <line num="3" count="13" type="cond" truecount="1" falsecount="1"/>
       <line num="4" count="13" type="stmt"/>
       <line num="8" count="14" type="cond" truecount="4" falsecount="0"/>
       <line num="9" count="12" type="cond" truecount="2" falsecount="0"/>
-      <line num="11" count="10" type="cond" truecount="2" falsecount="0"/>
-      <line num="12" count="9" type="cond" truecount="2" falsecount="0"/>
-      <line num="13" count="6" type="cond" truecount="2" falsecount="0"/>
-      <line num="14" count="5" type="cond" truecount="2" falsecount="0"/>
-      <line num="16" count="4" type="stmt"/>
+      <line num="11" count="11" type="cond" truecount="2" falsecount="0"/>
+      <line num="12" count="10" type="cond" truecount="2" falsecount="0"/>
+      <line num="13" count="7" type="cond" truecount="2" falsecount="0"/>
+      <line num="14" count="6" type="cond" truecount="2" falsecount="0"/>
+      <line num="16" count="5" type="stmt"/>
       <line num="20" count="1" type="cond" truecount="1" falsecount="1"/>
       <line num="21" count="1" type="cond" truecount="1" falsecount="1"/>
       <line num="22" count="1" type="cond" truecount="1" falsecount="1"/>
@@ -26,16 +26,16 @@
       <line num="35" count="2" type="cond" truecount="2" falsecount="0"/>
       <line num="36" count="1" type="stmt"/>
       <line num="39" count="1" type="stmt"/>
-      <line num="43" count="18" type="cond" truecount="3" falsecount="1"/>
+      <line num="43" count="20" type="cond" truecount="3" falsecount="1"/>
       <line num="44" count="0" type="stmt"/>
-      <line num="47" count="18" type="cond" truecount="1" falsecount="1"/>
-      <line num="48" count="0" type="stmt"/>
-      <line num="52" count="18" type="cond" truecount="2" falsecount="0"/>
-      <line num="53" count="4" type="cond" truecount="2" falsecount="0"/>
+      <line num="47" count="20" type="cond" truecount="2" falsecount="0"/>
+      <line num="48" count="1" type="stmt"/>
+      <line num="52" count="19" type="cond" truecount="2" falsecount="0"/>
+      <line num="53" count="5" type="cond" truecount="2" falsecount="0"/>
       <line num="54" count="2" type="stmt"/>
-      <line num="56" count="2" type="cond" truecount="2" falsecount="0"/>
+      <line num="56" count="3" type="cond" truecount="2" falsecount="0"/>
       <line num="57" count="1" type="stmt"/>
-      <line num="59" count="1" type="stmt"/>
+      <line num="59" count="2" type="stmt"/>
       <line num="62" count="14" type="stmt"/>
       <line num="65" count="14" type="stmt"/>
       <line num="68" count="14" type="stmt"/>

@@ -1,32 +1,37 @@
 const { calculateCertScore } = require('../app');
 
-describe('SmartExam Certification - FULL COVERAGE', () => {
+describe('SmartExam Certification - FINAL QUALITY GATE', () => {
 
     // ========================
-    // MODULE A (branches critiques)
+    // MODULE A (100% branches)
     // ========================
     test('moduleA = 0', () => {
         const r = calculateCertScore(0, 40, true);
         expect(r.status).toContain("Échec critique");
     });
 
-    test('moduleA entre 1 et 49', () => {
+    test('moduleA 1-49', () => {
         const r = calculateCertScore(25, 40, true);
         expect(r.status).toContain("Échec critique");
     });
 
-    test('moduleA entre 50 et 99', () => {
+    test('moduleA 50-99', () => {
         const r = calculateCertScore(75, 40, true);
         expect(r.status).toContain("Échec");
     });
 
-    test('moduleA entre 100 et 199', () => {
+    test('moduleA 100-199', () => {
         const r = calculateCertScore(150, 40, true);
         expect(r.status).toContain("Échec");
     });
 
+    test('moduleA boundary 199', () => {
+        const r = calculateCertScore(199, 40, true);
+        expect(r.status).toContain("Échec");
+    });
+
     // ========================
-    // TIME ADJUSTMENT (branches 36–44)
+    // TIME BRANCHES FULL COVERAGE
     // ========================
     test('time undefined', () => {
         const r = calculateCertScore(800, undefined, true);
@@ -38,46 +43,51 @@ describe('SmartExam Certification - FULL COVERAGE', () => {
         expect(r.finalScore).toBeDefined();
     });
 
-    test('time <= 0', () => {
+    test('time = 0', () => {
         const r = calculateCertScore(800, 0, true);
         expect(r.finalScore).toBeLessThan(800);
     });
 
-    test('time < 10 (bonus fort)', () => {
+    test('time < 10', () => {
         const r = calculateCertScore(800, 5, true);
         expect(r.finalScore).toBeGreaterThan(800);
     });
 
-    test('time < 30 (bonus moyen)', () => {
+    test('time < 30', () => {
         const r = calculateCertScore(800, 20, true);
         expect(r.finalScore).toBeGreaterThan(800);
     });
 
-    test('time > 120 (malus)', () => {
+    test('time = 120 boundary', () => {
+        const r = calculateCertScore(800, 120, true);
+        expect(r.finalScore).toBeDefined();
+    });
+
+    test('time > 120', () => {
         const r = calculateCertScore(800, 150, true);
         expect(r.finalScore).toBeLessThan(800);
     });
 
-    test('time > 300 (gros malus)', () => {
+    test('time > 300', () => {
         const r = calculateCertScore(800, 400, true);
         expect(r.finalScore).toBeLessThan(800);
     });
 
     // ========================
-    // NORMALIZE SCORE (ligne 48)
+    // NORMALIZATION FULL COVERAGE
     // ========================
     test('score > 1000 clamp', () => {
         const r = calculateCertScore(1500, 10, true);
         expect(r.finalScore).toBeLessThanOrEqual(1000);
     });
 
-    test('score négatif indirect', () => {
-        const r = calculateCertScore(800, -10, true);
-        expect(r.finalScore).toBeDefined();
+    test('score negative → normalize 0', () => {
+        const r = calculateCertScore(-5, 10, true);
+        expect(r.finalScore).toBe(0);
     });
 
     // ========================
-    // SUCCESS / FAILURE PATH (ligne 78)
+    // SUCCESS / FAILURE PATH
     // ========================
     test('success path >= 700', () => {
         const r = calculateCertScore(900, 40, true);
