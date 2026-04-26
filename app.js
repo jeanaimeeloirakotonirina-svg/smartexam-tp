@@ -39,39 +39,56 @@ function getSuccessStatus(score, webcam) {
     return "Erreur webcam";
 }
 
+/* =========================
+   REFACTORED FUNCTIONS
+   (réduction complexité Sonar)
+========================= */
+
 function calculateCertScore(moduleAScore, totalTimeMinutes, isWebcamVerified) {
-    if (moduleAScore === undefined || moduleAScore === null) {
+    const validation = validateModuleA(moduleAScore);
+    if (validation) return validation;
+
+    if (moduleAScore < 200) {
+        return handleLowModuleA(moduleAScore);
+    }
+
+    const score = computeScore(moduleAScore, totalTimeMinutes);
+
+    return buildResult(score, isWebcamVerified);
+}
+
+function validateModuleA(score) {
+    if (score === undefined || score === null) {
         return { finalScore: 0, status: "Erreur données" };
     }
 
-    if (moduleAScore < 0) {
+    if (score < 0) {
         return { finalScore: 0, status: "Erreur score négatif" };
     }
 
-    // CAS < 200 (couvre toutes branches)
-    if (moduleAScore < 200) {
-        if (moduleAScore < 50) {
-            return { finalScore: moduleAScore, status: "Échec critique - Module A très faible" };
-        }
-        if (moduleAScore < 100) {
-            return { finalScore: moduleAScore, status: "Échec sévère - Module A faible" };
-        }
-        return { finalScore: moduleAScore, status: "Échec - Module A insuffisant" };
-    }
+    return null;
+}
 
-    let score = moduleAScore;
+function handleLowModuleA(score) {
+    if (score < 50)
+        return { finalScore: score, status: "Échec critique - Module A très faible" };
 
-    // FORCE COVERAGE TIME
-    score = adjustScoreWithTime(score, totalTimeMinutes);
+    if (score < 100)
+        return { finalScore: score, status: "Échec sévère - Module A faible" };
 
-    // FORCE COVERAGE NORMALIZE
-    score = normalizeScore(score);
+    return { finalScore: score, status: "Échec - Module A insuffisant" };
+}
 
-    // FORCE ALL BRANCHES
+function computeScore(score, time) {
+    let s = adjustScoreWithTime(score, time);
+    return normalizeScore(s);
+}
+
+function buildResult(score, webcam) {
     if (score >= 700) {
         return {
             finalScore: score,
-            status: getSuccessStatus(score, isWebcamVerified)
+            status: getSuccessStatus(score, webcam)
         };
     }
 
@@ -80,6 +97,10 @@ function calculateCertScore(moduleAScore, totalTimeMinutes, isWebcamVerified) {
         status: getFailureStatus(score)
     };
 }
+
+/* =========================
+   EXPORTS
+========================= */
 
 module.exports = {
     normalizeScore,
